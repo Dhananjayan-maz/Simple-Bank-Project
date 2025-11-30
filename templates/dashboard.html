@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a4b8c;
+            --secondary-color: #f8b500;
+            --sidebar-width: 250px;
+            --sidebar-mini-width: 70px;
+            --header-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .admin-header {
+            height: var(--header-height);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2c6cb0 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            transition: all 0.3s;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .hamburger-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .brand-text i {
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(219, 26, 26, 0.1);
+        }
+
+        .profile-img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color:#dccce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+           
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            padding: 10px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            
+        }
+
+        .profile-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: white;
+            height: calc(100vh - var(--header-height));
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        body.sidebar-mini .admin-sidebar {
+            width: var(--sidebar-mini-width);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-header {
+            padding: 10px 25px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        body.sidebar-mini .menu-header {
+            display: none;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-link:hover, .menu-item.active .menu-link {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .menu-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+            margin-right: 15px;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        body.sidebar-mini .menu-text {
+            display: none;
+        }
+
+        .menu-arrow {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .menu-item.has-submenu.active .menu-arrow {
+            transform: rotate(90deg);
+        }
+
+        body.sidebar-mini .menu-arrow {
+            display: none;
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .menu-item.has-submenu.active .submenu {
+            max-height: 500px;
+        }
+
+        body.sidebar-mini .submenu {
+            display: none;
+        }
+
+        .submenu .menu-link {
+            padding: 10px 25px 10px 60px;
+            font-size: 0.9rem;
+        }
+
+        /* Tooltip for mini sidebar */
+        body.sidebar-mini .menu-link .menu-tooltip {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-left: 10px;
+        }
+
+        body.sidebar-mini .menu-link:hover .menu-tooltip {
+            display: block;
+        }
+
+        body.sidebar-mini .menu-link .menu-tooltip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: #333;
+        }
+
+        /* Main Content Styles */
+        .admin-main {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        body.sidebar-mini .admin-main {
+            margin-left: var(--sidebar-mini-width);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 10px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 12px 15px;
+        }
+
+        .table tbody td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            body.sidebar-open .admin-sidebar {
+                transform: translateX(0);
+            }
+            
+            .admin-main {
+                margin-left: 0;
+            }
+            
+            body.sidebar-open .admin-main {
+                margin-left: 0;
+            }
+            
+            .brand-text span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Message Container -->
+    <!-- <div class="container" style= "margin: 80px; margin-right: 10px; padding-left: 90px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %} -->
+    <div class="message-container" style="margin: 80px; margin-right: 10px; padding-left: 200px;" id="messageContainer" >
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background-color: rgb(60, 91, 228) color(srgb red green blue)" class="message-alert alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <div class="alert-content" >
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'warning' %}exclamation-triangle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+<!-- Section 1: Header -->
+    <header class="admin-header">
+        <div class="header-left">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="brand-text">
+                <i class="fas fa-university"></i>
+                <span>SecureBank Admin</span>
+            </div>
+        </div>
+        
+<div class="dropdown profile-dropdown header-right">
+  <button class="profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="profile-img"><img src="{{user.photo.url}}" width="35" height="35" style="border-radius: 50%"></div>
+    <span>{{user.username}}</span> 
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">My Profile</a></li>
+    <li><a class="dropdown-item" href="#">Settings</a></li>
+    <li><a class="dropdown-item" href="#">Help</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+  </ul>
+</div>
+
+    </header>
+
+    <!-- Section 2: Sidebar -->
+    <aside class="admin-sidebar">
+        <ul class="sidebar-menu">
+            <li class="menu-header">Main</li>
+            <li class="menu-item active">
+                <a href="/dashboard" class="menu-link">
+                    <i class="fas fa-tachometer-alt menu-icon"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            
+            <li class="menu-header">Banking</li>
+            <li class="menu-item has-submenu">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">Customers</span>
+                    <i class="fas fa-chevron-right menu-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item"><a href="/deposite" class="menu-link">Deposite</a></li>
+                    <li class="menu-item"><a href="/withdrawn" class="menu-link">Withdrawn</a></li>
+                    <li class="menu-item"><a href="/balance" class="menu-link">Balance </a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-item has-submenu">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-exchange-alt menu-icon"></i>
+                    <span class="menu-text">Transactions</span>
+                    <i class="fas fa-chevron-right menu-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item"><a href="#" class="menu-link">All Transactions</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Pending</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Failed</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-item has-submenu">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-credit-card menu-icon"></i>
+                    <span class="menu-text">Accounts</span>
+                    <i class="fas fa-chevron-right menu-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item"><a href="#" class="menu-link">All Accounts</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Open New Account</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Closed Accounts</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-header">Financial</li>
+            <li class="menu-item has-submenu">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-hand-holding-usd menu-icon"></i>
+                    <span class="menu-text">Loans</span>
+                    <i class="fas fa-chevron-right menu-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item"><a href="#" class="menu-link">Loan Applications</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Active Loans</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Loan Calculator</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-item has-submenu">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-chart-line menu-icon"></i>
+                    <span class="menu-text">Reports</span>
+                    <i class="fas fa-chevron-right menu-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="menu-item"><a href="#" class="menu-link">Daily Reports</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Monthly Reports</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link">Annual Reports</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-header">System</li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-cog menu-icon"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <i class="fas fa-shield-alt menu-icon"></i>
+                    <span class="menu-text">Security</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Section 3: Main Content -->
+    <main class="admin-main">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Transaction History</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Transactions</li>
+                    </ol>
+                </nav>
+            </div>
+            <div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i> Export
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Recent Transactions</h5>
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="text" class="form-control" placeholder="Search transactions...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Account No.</th>
+                                <th>Date</th>
+                                <th>Transaction Type</th>
+                                <th>Amount</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for entry in data %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ user.accno }}</td>
+                                <td>{{ entry.transaction_date }}</td>
+                                <td>
+                                    {% if entry.transaction_type == 'Deposit' %}
+                                        <span class="badge badge-success">Deposit</span>
+                                    {% elif entry.transaction_type == 'Withdrawn' %}
+                                        <span class="badge badge-danger">Withdrawn</span>
+                                    {% else %}
+                                        <span class="badge badge-warning">{{ entry.transaction_type }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>RS:{{ entry.amount }}</td>
+                                <td>RS:{{ entry.balance }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No transactions found.</td>
+                            </tr>
+                            {% endfor %} 
+   
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Toggle sidebar
+            $('#hamburgerBtn').click(function() {
+                $('body').toggleClass('sidebar-mini');
+                
+                // For mobile, we use a different approach
+                if ($(window).width() <= 768) {
+                    $('body').toggleClass('sidebar-open');
+                }
+            });
+            
+            // Toggle submenus
+            $('.has-submenu > .menu-link').click(function(e) {
+                e.preventDefault();
+                
+                // Close other open submenus
+                if (!$(this).parent().hasClass('active')) {
+                    $('.has-submenu.active').removeClass('active');
+                }
+                
+                // Toggle current submenu
+                $(this).parent().toggleClass('active');
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            $(document).click(function(e) {
+                if ($(window).width() <= 768) {
+                    if (!$(e.target).closest('.admin-sidebar, .hamburger-btn').length) {
+                        $('body').removeClass('sidebar-open');
+                    }
+                }
+            });
+            
+            // Update active menu item
+            $('.menu-link').click(function(e) {
+                // Don't set active for submenu items
+                if ($(this).closest('.submenu').length) {
+                    return;
+                }
+                
+                // Don't set active for menu items with submenus (handled above)
+                if ($(this).parent().hasClass('has-submenu')) {
+                    return;
+                }
+                
+                // Set active for regular menu items
+                $('.menu-item').removeClass('active');
+                $(this).parent().addClass('active');
+            });
+            
+            // Handle window resize
+            $(window).resize(function() {
+                if ($(window).width() > 768) {
+                    $('body').removeClass('sidebar-open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
